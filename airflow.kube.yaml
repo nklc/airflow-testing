@@ -60,12 +60,16 @@ spec:
       targetPort: flower
       nodePort: 32081
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: postgres
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: airflow
+      tier: db
   template:
     metadata:
       labels:
@@ -93,12 +97,16 @@ spec:
         - name: POSTGRES_DB
           value: "airflow"
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: redis
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: airflow
+      tier: backend
   template:
     metadata:
       labels:
@@ -120,12 +128,16 @@ spec:
         - name: redis
           containerPort: 6379
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: web
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: airflow
+      tier: web
   strategy:
     type: Recreate
   template:
@@ -184,12 +196,16 @@ spec:
           - name: airflowpluginsdir
             mountPath: "/usr/local/airflow/plugins"
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: flower
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: airflow
+      tier: flower
   strategy:
     type: Recreate
   template:
@@ -255,12 +271,16 @@ spec:
           - name: airflowpluginsdir
             mountPath: "/usr/local/airflow/plugins"
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: scheduler
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: airflow
+      tier: scheduler
   template:
     metadata:
       labels:
@@ -321,12 +341,16 @@ spec:
           - name: airflowpluginsdir
             mountPath: "/usr/local/airflow/plugins"
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: worker
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: airflow
+      tier: worker
   template:
     metadata:
       labels:
